@@ -29,3 +29,9 @@ Developed by **R3ALCYB3R**. We use **Proton**-level security standards for all a
 
 ## 📂 Related Repositories
 - [Official SideStore Source](https://github.com/R3ALCYB3R/Lightning-Struck)
+
+
+## 🤖 Android APK CI
+- GitHub Actions workflow: `.github/workflows/android-apk.yml`
+- Artifact output: `SwitchUI-android-debug-apk` (contains `app-debug.apk`)
+- Build target ABI: `arm64-v8a`
