@@ -67,12 +67,35 @@ bool VulkanContext::CreateDevice() {
 
     std::vector<VkPhysicalDevice> devices(deviceCount);
     vkEnumeratePhysicalDevices(instance, &deviceCount, devices.data());
-    physicalDevice = devices[0]; // Simple selection
+
+    // Better device selection: look for graphics queue support
+    for (const auto& dev : devices) {
+        uint32_t queueFamilyCount = 0;
+        vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyCount, nullptr);
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueFamilyCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(dev, &queueFamilyCount, queueFamilies.data());
+
+        for (uint32_t i = 0; i < queueFamilyCount; i++) {
+            VkBool32 presentSupport = false;
+            vkGetPhysicalDeviceSurfaceSupportKHR(dev, i, surface, &presentSupport);
+            if ((queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) && presentSupport) {
+                physicalDevice = dev;
+                graphicsQueueFamilyIndex = i;
+                break;
+            }
+        }
+        if (physicalDevice != VK_NULL_HANDLE) break;
+    }
+
+    if (physicalDevice == VK_NULL_HANDLE) {
+        LOGE("Could not find a suitable physical device");
+        return false;
+    }
 
     float queuePriority = 1.0f;
     VkDeviceQueueCreateInfo queueCreateInfo = {};
     queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
-    queueCreateInfo.queueFamilyIndex = 0; // Simplified
+    queueCreateInfo.queueFamilyIndex = graphicsQueueFamilyIndex;
     queueCreateInfo.queueCount = 1;
     queueCreateInfo.pQueuePriorities = &queuePriority;
 
@@ -92,7 +115,7 @@ bool VulkanContext::CreateDevice() {
         return false;
     }
 
-    vkGetDeviceQueue(device, 0, 0, &graphicsQueue);
+    vkGetDeviceQueue(device, graphicsQueueFamilyIndex, 0, &graphicsQueue);
     return true;
 }
 
