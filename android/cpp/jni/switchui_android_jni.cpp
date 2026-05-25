@@ -14,7 +14,7 @@ static SwitchUI::VulkanContext* g_VulkanContext = nullptr;
 extern "C" {
 
 JNIEXPORT void JNICALL
-Java_com_r3alcyb3r_switchui_NativeEngine_InitEmulator(JNIEnv* env, jobject thiz, jobject surface) {
+Java_com_r3alcyb3r_switchui_NativeEngine_initEmulator(JNIEnv* env, jobject thiz, jobject surface) {
     LOGI("Initializing SwitchUI Native Engine...");
 
     ANativeWindow* window = ANativeWindow_fromSurface(env, surface);
@@ -32,7 +32,7 @@ Java_com_r3alcyb3r_switchui_NativeEngine_InitEmulator(JNIEnv* env, jobject thiz,
 }
 
 JNIEXPORT void JNICALL
-Java_com_r3alcyb3r_switchui_NativeEngine_LoadROM(JNIEnv* env, jobject thiz, jstring path) {
+Java_com_r3alcyb3r_switchui_NativeEngine_loadROM(JNIEnv* env, jobject thiz, jstring path) {
     const char* nativePath = env->GetStringUTFChars(path, nullptr);
     LOGI("Loading ROM from: %s", nativePath);
 
@@ -42,12 +42,12 @@ Java_com_r3alcyb3r_switchui_NativeEngine_LoadROM(JNIEnv* env, jobject thiz, jstr
 }
 
 JNIEXPORT void JNICALL
-Java_com_r3alcyb3r_switchui_NativeEngine_PauseEmulator(JNIEnv* env, jobject thiz) {
+Java_com_r3alcyb3r_switchui_NativeEngine_pauseEmulator(JNIEnv* env, jobject thiz) {
     LOGI("Emulator Paused");
 }
 
 JNIEXPORT void JNICALL
-Java_com_r3alcyb3r_switchui_NativeEngine_StopEmulator(JNIEnv* env, jobject thiz) {
+Java_com_r3alcyb3r_switchui_NativeEngine_stopEmulator(JNIEnv* env, jobject thiz) {
     LOGI("Stopping Emulator...");
     if (g_VulkanContext) {
         g_VulkanContext->Shutdown();

@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include "jit_memory.hpp"
 #include <sys/mman.h>
 #include <unistd.h>
